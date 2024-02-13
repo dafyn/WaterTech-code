@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1,
+    h2,
+    h3 {
+      color: #333;
+    }
+
+    p {
+      color: #666;
+      margin-bottom: 10px;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    li {
+      margin-bottom: 5px;
+    }
+
+    code {
+      font-family: 'Courier New', monospace;
+      background-color: #f9f9f9;
+      padding: 2px 5px;
+      border-radius: 3px;
+    }
+  </style>
+  <title>Introduction to the Command Line Tool</title>
+</head>
+
+<body>
+  <h1>Introduction to the Command Line Tool</h1>
+
+
+  <section>
+    <h3>Some useful commands, with examples</h3>
+    <p>Get help using mapshaper</p>
+    <ul>
+      <li><code>mapshaper -h</code> - List all the available commands</li>
+      <li><code>mapshaper -h simplify</code> - See detailed options for the simplify command</li>
+    </ul>
+
+    <p>Get information about a dataset</p>
+    <ul>
+      <li><code>mapshaper mystery_data.json -info</code> # Summarize a dataset and list attribute fields</li>
+      <li><code>mapshaper provinces.shp -calc 'min(INCOME)' -calc 'median(INCOME)' -calc 'max(INCOME)'</code> #
+        Calculate some statistics about attribute data (INCOME is a field name)</li>
+    </ul>
+
+    <p>Convert between file formats</p>
+    <ul>
+      <li><code>mapshaper *.shp -o format=geojson</code> # Convert all the Shapefiles in a directory into GeoJSON.</li>
+      <li><code>mapshaper locations.csv -points x=lng y=lat -o format=geojson</code># Convert a CSV file with lat/lng
+        fields to a GeoJSON file containing point features.</li>
+
+    </ul>
+
+    <p>Simplify a polygon layer (works for polylines too)</p>
+    <ul>
+      <li><code>mapshaper counties.shp -simplify 10% -o out.shp</code># Retain 10% of removable vertices</li>
+    </ul>
+
+    <p>Clip a layer of polygons, lines or points using polygons in a second layer</p>
+    <ul>
+      <li><code>mapshaper states.shp -clip land_area.shp -o clipped.shp</code> </li>
+    </ul>
+
+    <p>Erase parts of a polygon, line or point layer using a second polygon layer</p>
+    <ul>
+      <li><code>mapshaper land_areas.shp -erase water_bodies.shp -o erased.shp</code> </li>
+    </ul>
+
+    <p>Aggregate polygons by dissolving edges</p>
+    <ul>
+      <li><code>mapshaper states.shp -dissolve -o country.shp</code> # Dissolve polygons in a feature layer into a
+        single polygon</li>
+      <li>
+        <code>mapshaper counties.shp -dissolve STATE_FIPS copy-fields=STATE_NAME sum-fields=POPULATION -o states.shp</code>
+        # Generate state-level polygons by dissolving a layer of counties<br>
+        # (STATE_FIPS, POPULATION and STATE_NAME are attribute field names)</li>
+
+    </ul>
+
+    <p>Join an external data table to a feature layer</p>
+    <ul>
+      <li>
+        <code>mapshaper states.shp -join demographics.csv keys=STATE_FIPS,FIPS field-types=FIPS:str -o joined.shp</code>
+        # Join a csv table to a Shapefile<br>
+        # Tip: the FIPS:str type definition prevents the values in the FIPS field from being converted to numbers</li>
+      <li><code>mapshaper states.shp -join states2.dbf keys=STATE,STATE -o joined.shp</code># Join the dbf table from
+        one Shapefile to another Shapefile</li>
+
+    </ul>
+
+    <p>Use an attribute as an id</p>
+    <ul>
+      <li><code>mapshaper -i counties.shp -o counties.svg id-field=gID format=svg</code># Add data field to use as
+        identifier</li>
+
+    </ul>
+
+    <p>Edit the attribute table</p>
+    <ul>
+      <li><code>mapshaper counties.shp -each "STATE_FIPS=CNTY_FIPS.substr(0, 2), AREA=$.area"</code> # Add data fields
+        using a JavaScript expression</li>
+
+    </ul>
+
+    <p>Use a sequence of commands</p>
+    <ul>
+      <li><code># List all the available commands<br> mapshaper -h</code> </li>
+      <li><code>mapshaper -h simplify</code> - See detailed options for the simplify command</li>
+      <!-- Add other command examples as needed -->
+    </ul>
+  </section>
+
+  <h1>Working with layers</h1>
+  <section>
+    <p>Most of mapshaper's commands apply to layers of data features. A layer is a collection of features with the same
+      geometry type and a consistent set of data properties (or no data properties). Mapshaper supports polygon,
+      polyline and point layers. For all of these types, a single feature may contain one geometric shape, multiple
+      shapes, or no shapes (i.e. null/empty geometry).</p>
+    <br>
+    <p>The simplest way to use mapshaper is to import a single layer of features, edit it, and save to a file</p>
+    <code>mapshaper counties.shp -filter '$.isNull === false' -o counties_notnull.shp</code>
+    <br>
+    <p>Version 0.2.0 introduced support for multiple layers along with new syntax for selecting which layer or layers a
+      command should target. The <code>-target <layers></code> command takes a (comma-separated) list of one or more
+      layers for the subsequent command to target. As an alternative, most commands support the
+      <code>target=<layer(s)></code> option.</p>
+    <br>
+    <p>The following example shows how to import a layer of province boundaries, create a second layer consisting of
+      just the shared boundaries, simplify the geometry and save both layers as GeoJSON files. In this example, the
+      <code>-innerlines</code> command is invoked with two options: +, which creates a new layer instead of replacing
+      the target layer, and <code>name=lines</code>, which renames the new layer. The output is two
+      files,<code>out/provinces</code> .json and <code>out/lines.json</code> .</p>
+    <br>
+    <code>mapshaper provinces.shp \<br>
+    -simplify 20% \<br>
+    -innerlines + name=lines \<br>
+    -target provinces,lines \<br>
+    -o format=geojson out/</code>
+
+    <p>When importing TopoJSON files, mapshaper treats each named object as a separate layer. The next example shows how
+      to import a TopoJSON file containing a layer named <code>states</code> along with several other layers, extract
+      the feature for Hawaii and save it as a GeoJSON file. In this example, invoking <code>-filter</code> with
+      <code>target=states</code> applies the filter command to the layer named <code>states</code> . The subsequent -o
+      command targets the output of the previous command.</p>
+    <br>
+    <code>mapshaper usa.topojson \<br>
+      -filter 'STATE == "HI"' target=states \<br>
+      -o out/hawaii.json format=geojson</code>
+  </section>
+
+
+</body>
+
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GIS Command Reference</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #fff;
+    }
+
+    header {
+      background-color: #333;
+      color: #fff;
+      padding: 15px;
+      text-align: center;
+    }
+
+    nav {
+      background-color: #ddd;
+      padding: 10px;
+      overflow: hidden;
+    }
+
+    nav a {
+      float: left;
+      display: block;
+      color: #333;
+      text-align: center;
+      padding: 14px 16px;
+      text-decoration: none;
+    }
+
+    nav a:hover {
+      background-color: #ddd;
+      color: #333;
+    }
+
+    section {
+      margin: 20px;
+    }
+
+    h2 {
+      border-bottom: 2px solid #333;
+      padding-bottom: 5px;
+    }
+
+    pre {
+      background-color: #f1f1f1;
+      padding: 10px;
+      border-radius: 5px;
+      overflow-x: auto;
+    }
+
+    code {
+      font-family: 'Courier New', monospace;
+      color: #333;
+    }
+
+    .copy-icon {
+      cursor: pointer;
+      display: inline-block;
+      background-color: #4caf50;
+      color: #fff;
+      padding: 5px 10px;
+      border-radius: 5px;
+      margin-top: 10px;
+    }
+
+    .copy-icon:hover {
+      background-color: #45a049;
+    }
+
+    @media only screen and (max-width: 600px) {
+      nav a {
+        float: none;
+        width: 100%;
+        text-align: left;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <h1>GIS Command Reference</h1>
+  </header>
+
+  <p>This documentation applies to version 0.6.57 of mapshaper's command line program. Run mapshaper -v to check your
+    version. For an introduction to the command line tool, read this page first.</p>
+
+  <section id="category1">
+    <h2>Command line Syntax</h2>
+    <p>Mapshaper takes a list of commands and runs them in sequence, from left to right. A command consists of the name
+      of a command prefixed by a hyphen, followed by options for the command. The initial import command -i can be
+      omitted.</p>
+    <div>
+      <pre id="command1Code">
+        <code>
+          #Read a Shapefile, simplify using Douglas-Peucker, output as GeoJSON.
+          mapshaper provinces.shp -simplify dp 20% -o precision=0.00001 output.geojson
+      </code>
+        </pre>
+      <span class="copy-icon" onclick="copyToClipboard('command1Code')">📋 Copy</span>
+
+      <h3>Command 2</h3>
+      <p>Description of Command 2.</p>
+      <pre>
+        <code>Command syntax and usage example</code>
+        <span class="copy-icon" onclick="copyToClipboard('command1Code')">Copy</span>
+      </pre>
+      
+      <!-- Add more commands as needed -->
+    </div>
+  </section>
+
+  <section id="category2">
+    <h2>Command options can take three forms:</h2>
+    <p>Mapshaper takes a list of commands and runs them in sequence, from left to right. A command consists of the name
+      of a command prefixed by a hyphen, followed by options for the command. The initial import command -i can be
+      omitted.</p>
+    <div>
+      <pre id="command1Code">
+        <code>
+          #Read a Shapefile, simplify using Douglas-Peucker, output as GeoJSON.
+          mapshaper provinces.shp -simplify dp 20% -o precision=0.00001 output.geojson
+      </code>
+        </pre>
+      <span class="copy-icon" onclick="copyToClipboard('command1Code')">📋 Copy</span>
+
+      <h3>Command 2</h3>
+      <p>Description of Command 2.</p>
+      <pre><code>Command syntax and usage example</code></pre>
+      <span class="copy-icon" onclick="copyToClipboard('command1Code')">📋 Copy</span>
+      <!-- Add more commands as needed -->
+    </div>
+  </section>
+
+  <section id="category3">
+    <h2>Category 3</h2>
+    <div>
+      <!-- Commands for Category 3 -->
+    </div>
+  </section>
+
+  <!-- Add more sections for additional categories -->
+  <script>
+    function copyToClipboard(elementId) {
+      var codeElement = document.getElementById(elementId);
+      var codeText = codeElement.textContent || codeElement.innerText;
+
+      var textarea = document.createElement('textarea');
+      textarea.value = codeText;
+      document.body.appendChild(textarea);
+
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+
+      alert('Code copied to clipboard!');
+    }
+  </script>
+
+</body>
+
+</html>
